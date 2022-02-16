@@ -4,7 +4,7 @@
 
 Author: Sinatra Gesualdo
 
-Professor: [Carmine Tommaso Recchiuto]
+Professor: Carmine Tommaso Recchiuto
 
 University of Genova
 
