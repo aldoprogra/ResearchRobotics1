@@ -1,11 +1,15 @@
-# RT course
+# RT Course
+-----------
 
 
 Author: Sinatra Gesualdo
+
 Professor: [Carmine Tommaso Recchiuto]
+
 University of Genova
+
 MSC Robotics engineering 
 
 
-#### In this repository all the assignments made during the first semester.
+#### In this repository all the assignments done during the first semester.
 
