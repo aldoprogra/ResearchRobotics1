@@ -5,9 +5,9 @@ Introduction
 ----------------------
 
 I was asked to develop a program in which the user control the robot in a 3D simulation enviroment in three different ways:
-- 1) autonomously reach a x,y coordinate inserted by the user
-- 2) drive the robot with the keyboard
-- 3) drive the robot with keyboard but avoiding collisions
+1) autonomously reach a x,y coordinate inserted by the user
+2) drive the robot with the keyboard
+3) drive the robot with keyboard but avoiding collisions
 
 How to install
 ----------------------
