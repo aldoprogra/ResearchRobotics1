@@ -8,6 +8,9 @@ In the second assignment of Research Track course, we were asked to use Ros arhi
 
 After have downloaded the package, divide the terminal in two part and enter:
 
+```bash
+rosrun stage_ros stageros $(rospack find second_assignment)/world/my_world.world
+```
 
 ```bash
 rosrun nodes interface_node
