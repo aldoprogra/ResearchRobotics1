@@ -35,7 +35,7 @@ $ rosrun final_assignment master.py
 
 After asking coordinates x,y, they will published to move_base/goal
 
-```
+```python
     ## provide and publish move_base with (x,y) values
     msg.target_pose.pose.position.x = x
     msg.goal.target_pose.pose.position.y = y
@@ -43,7 +43,7 @@ After asking coordinates x,y, they will published to move_base/goal
 ```
 The status is retrived by move_base/status and the user can cancel (publishing in move_base/cancel) the goal and insert a new one:
 
-```
+```python
     print("\nDo you want a new goal?[y] or [n]\n")
                          
     button = input()
@@ -61,7 +61,7 @@ The status is retrived by move_base/status and the user can cancel (publishing i
 2) Manual control 
 
 The user digit the comand and the correct velocity is published in cmd/vel
-```
+```python
     if (arrow == 'w'):
     	[my_vel.linear.x, my_vel.angular.z] =[1 , 0] 
     elif (arrow == 'a'):
@@ -83,14 +83,14 @@ The user digit the comand and the correct velocity is published in cmd/vel
 
 The program compute the minimum distance in several direction 
 
-```
+```python
         min_fright = min(min(msg.ranges[144:287]), 5)
         min_front =  min(min(msg.ranges[288:431]), 5)
         min_fleft =  min(min(msg.ranges[432:575]), 5)
 ```
 
 and if it is less then a threshold the velocity is published not by the user but by take_action() trying to avoid obstacles
-```
+```python
     if min_front > 1 and min_fleft > 1 and min_fright > 1:
         state_description = 'case 1 - nothing'
         linear_x = 0.6
