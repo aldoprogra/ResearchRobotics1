@@ -15,7 +15,7 @@ How to install
 Install in your workspace and build:
 
 ```
-$ cd catkin_make
+$ catkin_make
 ```
 
 How to run
