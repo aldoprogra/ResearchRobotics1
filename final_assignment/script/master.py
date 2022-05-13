@@ -1,18 +1,53 @@
 #! /usr/bin/env python
+## @package final_assignment
+# @file master.py
+# @brief Using ROS framework, this script allows the user to switch to different modalities:
+#autonomously reach a x,y coordinate, drive the robot with the keyboard and
+#drive the robot with keyboard but avoiding collisions. In the README file is explained how run the simulation.
+# @author Sinatra Gesualdo
+# @version 1
+# @date 16/05/2022
+#
+# @details
+#
+# Subscribes to: <BR>
+# /odom
+# /move_base/status
+# /scan
+# Publishes to: <BR>
+# /cmd_vel
+# /move_base/cancel
+#-rospy
+# - pure python module for interfacing with ROS workspace
+#
 
 import rospy
+#-os
+# -access to OS functionalities like read command lines. It is used for clear the shell
 import os
+
 from move_base_msgs.msg import MoveBaseActionFeedback
 from move_base_msgs.msg import MoveBaseActionGoal
 from geometry_msgs.msg import Twist
 from actionlib_msgs.msg import GoalID
 from actionlib_msgs.msg import GoalStatusArray
+from nav_msgs.msg import Odometry
+#-termios
+# - access to some terinal functionalities. It is used for read command line without pressing enter
 import termios
 import sys, tty
 from sensor_msgs.msg import LaserScan
+import jupyros
+#-math
+# - provide important functions for calculating distance and orientation of the robot.
+import math
 
 
 def intro():
+	##
+	# @brief Allow to print the main menù, doesn't have argument and returned variable neither.
+	# 
+
         os.system("clear")
         print("PRESS 1,2,3 or 4:\n")
         print("[1]- Planning motion")
@@ -21,11 +56,27 @@ def intro():
         print("[4]- Exit\n")
         
 
-                
-def move_base():
+def todist(x,y,x_pos,y_pos):
+	##
+	# @brief Use pitagora formula for calculating the distance between the robot and goal position.
+	# @param x position of the robot
+	# @param y position of the robot
+	# @param x_goal x coordinate of the goal
+	# @param y_goal y coordinate of the goal
+	# @return a float number, the distance
 
+	return ((x-x_pos)**2-(y-y_pos)**2)**0.5
+	
+def move_base():
+	##
+	# @brief Represent the first motion option. In this function is asked coordinates to the user
+	#the goal is published in /move_base/goal topic and the feedback is displayed to the user. Both at the end and during the motion towards the goal,
+	#the user can cancel the current goal and choose another one.
         pub_movebase = rospy.Publisher("/move_base/goal", MoveBaseActionGoal, queue_size = 50)
- 
+        position = rospy.wait_for_message("/odom",Odometry)
+        x_pos = position.twist.twist.linear.x 
+        y_pos = position.twist.twist.linear.y 
+        
         rate = rospy.Rate(10)
         move = MoveBaseActionGoal()
         move.goal.target_pose.header.frame_id = "map"
@@ -41,6 +92,7 @@ def move_base():
                 
                 move.goal.target_pose.pose.position.x = x
                 move.goal.target_pose.pose.position.y = y
+                dist = todist(x,y,x_pos,y_pos)
                 pub_movebase.publish(move)
                 rate.sleep()
                 
@@ -53,6 +105,8 @@ def move_base():
                         
                 if(status == 1):
                         print("Goal accepted")
+                        
+                        
                         
             
                 while(True):
@@ -75,6 +129,7 @@ def move_base():
                         
                         rate.sleep()
                         os.system("clear")
+                        print(dist)
                         print("\nDo you want a new goal?[y] or [n]\n")
        
                                 
@@ -89,7 +144,12 @@ def move_base():
                                 publisher_cancel.publish(cancel)
 
                                 return 1
-                        
+def manual_show():
+    	##
+    	# @brief Print to the user which command press for start controlling the robot with the keyboard
+        print("--- MANUAL DRIVE----\n")
+        print("Press:\n[w]: Forward\n[a]: Left\n[d]:Right\n[s]: Back\n[q]: Quit\n")
+        
                                 
 def getch():
     def _getch():
@@ -102,12 +162,16 @@ def getch():
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
     return _getch()
-            
-   
+
+
+
 def manual():
+	##
+	# @brief Is the second option for the robot motion in the simulation.
+	# it is possible in this modality to control the robot with the keyboard.
+	# At every command is associated a different value of speed that will published to /cmd_vel 
         os.system("clear")
-        print("--- MANUAL DRIVE----\n")
-        print("Press:\n[w]: Forward\n[a]: Left\n[d]:Right\n[s]: Back\n[q]: Quit\n")
+        manual_show()
         
         vel_pub = rospy.Publisher("/cmd_vel", Twist, queue_size= 50)
         my_vel = Twist()
@@ -141,15 +205,29 @@ def manual():
 
 
 def clbk_laser(msg):
-
+	##
+	#@brief Is the callback whenever new data in /scan topic is ready. The long list ranges of the 
+	#topic is processed for getting closest obstacle distance in front, right and left direction of the robot.
+	#@param msg the message coming from the sensor, published in the /scan topic
+	#@return min_fright float minimum distance in the right direction
+	#@return min_front float minimum distance in the front direction
+	#@return min_fleft float minimum distance in the left direction
         min_fright = min(min(msg.ranges[144:287]), 5)
         min_front =  min(min(msg.ranges[288:431]), 5)
         min_fleft =  min(min(msg.ranges[432:575]), 5)
+        
         
         return min_fright, min_front, min_fleft
 
 
 def take_action(min_fright,min_front, min_fleft):
+    ##
+    #@brief Takes into account the closest obstacle distance for moving the robot in the opposite direction
+    #the function is used in the assisted motion drive for force the robot to not crash
+    #@param min_fright float minimum distance in the right direction
+    #@parmam min_front float minimum distance in the front direction
+    #@param min_fright float minimum distance in the left direction
+    
     msg = Twist()
     msg.linear.y = 0
     msg.linear.z = 0
@@ -197,11 +275,21 @@ def take_action(min_fright,min_front, min_fleft):
     msg.angular.z = angular_z
     my_vel.publish(msg)
         
-        
+
+def assisted_manual_show():
+	##
+	#@brief Display the command to the user for controlling the robot, and how to exit the modality and come back to the menu
+        print("--- MANUAL DRIVE----\n")
+        print("Press:\n[w]: Forward\n[a]: Left\n[d]:Right\n[s]: Back\n[q]: Quit\n")
         
 def assisted_manual():
+	##
+	#@brief Is the third modality. After updating the distance between robot and closest distance, if the robot is too close take_action
+	#take control otherwise the user uses can control the robot as he wishes.
 
+	
         os.system("clear")
+        assisted_manual_show()
         vel_pub = rospy.Publisher("cmd_vel", Twist, queue_size= 50)
 
         
@@ -212,8 +300,7 @@ def assisted_manual():
         my_vel.angular.x = 0
         my_vel.angular.y= 0
         
-        print("--- ASSISTED MANUAL DRIVE----\n")
-        print("Press:\n[w]: Forward\n[a]: Left\n[d]:Right\n[s]: Back\n[q]: Quit\n")
+
         
         while True:
         
@@ -251,6 +338,12 @@ def assisted_manual():
         return 1
            
 def main():
+	##
+	#@brief In the main the cde handles the modalities:
+	#\li \c move_base -> planning 
+	#\li \c manual -> manual control
+	#\li \c assisted_manual -> assisted obstacle avoidance
+	
 
         exit = True
         rospy.init_node('controller')
@@ -259,8 +352,9 @@ def main():
         while (not rospy.is_shutdown() ):
                 
                 intro()
-
                 command = int(input())
+                
+                
                 
                 while (True):
  
