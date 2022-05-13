@@ -1,0 +1,163 @@
+\hypertarget{master_8py}{}\doxysection{script/master.py File Reference}
+\label{master_8py}\index{script/master.py@{script/master.py}}
+
+
+Using ROS framework, this script allows the user to switch to different modalities\+: autonomously reach a x,y coordinate, drive the robot with the keyboard and drive the robot with keyboard but avoiding collisions.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{master_8py_a49c4a1243cdd12b3a0c9ec6d0257fd8c}\label{master_8py_a49c4a1243cdd12b3a0c9ec6d0257fd8c}} 
+def {\bfseries master.\+intro} ()
+\begin{DoxyCompactList}\small\item\em Allow to print the main menù, doesn\textquotesingle{}t have argument and returned variable neither. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{master_8py_aa69429913e6259aa39d5e66d76e4dd72}{master.\+todist}} (x, y, x\+\_\+pos, y\+\_\+pos)
+\begin{DoxyCompactList}\small\item\em Use pitagora formula for calculating the distance between the robot and goal position. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{master_8py_ad928f47bd025964a4156139cf9623587}{master.\+move\+\_\+base}} ()
+\begin{DoxyCompactList}\small\item\em Represent the first motion option. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{master_8py_adf619fa0453584a14e9fa6f43e528ac0}\label{master_8py_adf619fa0453584a14e9fa6f43e528ac0}} 
+def {\bfseries master.\+manual\+\_\+show} ()
+\begin{DoxyCompactList}\small\item\em Print to the user which command press for start controlling the robot with the keyboard. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{master_8py_ad7c015c455582e1e44438a37eaa9fdc5}\label{master_8py_ad7c015c455582e1e44438a37eaa9fdc5}} 
+def {\bfseries master.\+getch} ()
+\item 
+def \mbox{\hyperlink{master_8py_aa88247fcb5607d46d7f43e6a3dbe9c3b}{master.\+manual}} ()
+\begin{DoxyCompactList}\small\item\em Is the second option for the robot motion in the simulation. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{master_8py_ae656eb04353a906f4abfbbef612e331b}{master.\+clbk\+\_\+laser}} (msg)
+\begin{DoxyCompactList}\small\item\em Is the callback whenever new data in /scan topic is ready. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{master_8py_a9b433ea76d3b1ce511e1361719d4e55d}{master.\+take\+\_\+action}} (min\+\_\+fright, min\+\_\+front, min\+\_\+fleft)
+\begin{DoxyCompactList}\small\item\em Takes into account the closest obstacle distance for moving the robot in the opposite direction the function is used in the assisted motion drive for force the robot to not crash. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{master_8py_a56ba658dd92447c947686d663b3b6148}\label{master_8py_a56ba658dd92447c947686d663b3b6148}} 
+def {\bfseries master.\+assisted\+\_\+manual\+\_\+show} ()
+\begin{DoxyCompactList}\small\item\em Display the command to the user for controlling the robot, and how to exit the modality and come back to the menu. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{master_8py_a1045ec6d5e05bf651e110e9800502e11}{master.\+assisted\+\_\+manual}} ()
+\begin{DoxyCompactList}\small\item\em Is the third modality. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{master_8py_a1835cdc0fc647a2c5b5ccf8b5e6e1778}{master.\+main}} ()
+\begin{DoxyCompactList}\small\item\em In the main the cde handles the modalities\+: \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Using ROS framework, this script allows the user to switch to different modalities\+: autonomously reach a x,y coordinate, drive the robot with the keyboard and drive the robot with keyboard but avoiding collisions. 
+
+In the README file is explained how run the simulation. \begin{DoxyAuthor}{Author}
+Sinatra Gesualdo 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+16/05/2022
+\end{DoxyDate}
+Subscribes to\+: ~\newline
+ /odom /move\+\_\+base/status /scan Publishes to\+: ~\newline
+ /cmd\+\_\+vel /move\+\_\+base/cancel -\/rospy
+\begin{DoxyItemize}
+\item pure python module for interfacing with ROS workspace 
+\end{DoxyItemize}
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{master_8py_a1045ec6d5e05bf651e110e9800502e11}\label{master_8py_a1045ec6d5e05bf651e110e9800502e11}} 
+\index{master.py@{master.py}!assisted\_manual@{assisted\_manual}}
+\index{assisted\_manual@{assisted\_manual}!master.py@{master.py}}
+\doxysubsubsection{\texorpdfstring{assisted\_manual()}{assisted\_manual()}}
+{\footnotesize\ttfamily def master.\+assisted\+\_\+manual (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Is the third modality. 
+
+After updating the distance between robot and closest distance, if the robot is too close take\+\_\+action take control otherwise the user uses can control the robot as he wishes. \mbox{\Hypertarget{master_8py_ae656eb04353a906f4abfbbef612e331b}\label{master_8py_ae656eb04353a906f4abfbbef612e331b}} 
+\index{master.py@{master.py}!clbk\_laser@{clbk\_laser}}
+\index{clbk\_laser@{clbk\_laser}!master.py@{master.py}}
+\doxysubsubsection{\texorpdfstring{clbk\_laser()}{clbk\_laser()}}
+{\footnotesize\ttfamily def master.\+clbk\+\_\+laser (\begin{DoxyParamCaption}\item[{}]{msg }\end{DoxyParamCaption})}
+
+
+
+Is the callback whenever new data in /scan topic is ready. 
+
+The long list ranges of the topic is processed for getting closest obstacle distance in front, right and left direction of the robot. 
+\begin{DoxyParams}{Parameters}
+{\em msg} & the message coming from the sensor, published in the /scan topic \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+min\+\_\+fright float minimum distance in the right direction 
+
+min\+\_\+front float minimum distance in the front direction 
+
+min\+\_\+fleft float minimum distance in the left direction 
+\end{DoxyReturn}
+\mbox{\Hypertarget{master_8py_a1835cdc0fc647a2c5b5ccf8b5e6e1778}\label{master_8py_a1835cdc0fc647a2c5b5ccf8b5e6e1778}} 
+\index{master.py@{master.py}!main@{main}}
+\index{main@{main}!master.py@{master.py}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily def master.\+main (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+In the main the cde handles the modalities\+: 
+
+\begin{DoxyItemize}
+\item {\ttfamily move\+\_\+base} -\/\texorpdfstring{$>$}{>} planning \item {\ttfamily manual} -\/\texorpdfstring{$>$}{>} manual control \item {\ttfamily assisted\+\_\+manual} -\/\texorpdfstring{$>$}{>} assisted obstacle avoidance \end{DoxyItemize}
+\mbox{\Hypertarget{master_8py_aa88247fcb5607d46d7f43e6a3dbe9c3b}\label{master_8py_aa88247fcb5607d46d7f43e6a3dbe9c3b}} 
+\index{master.py@{master.py}!manual@{manual}}
+\index{manual@{manual}!master.py@{master.py}}
+\doxysubsubsection{\texorpdfstring{manual()}{manual()}}
+{\footnotesize\ttfamily def master.\+manual (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Is the second option for the robot motion in the simulation. 
+
+it is possible in this modality to control the robot with the keyboard. At every command is associated a different value of speed that will published to /cmd\+\_\+vel \mbox{\Hypertarget{master_8py_ad928f47bd025964a4156139cf9623587}\label{master_8py_ad928f47bd025964a4156139cf9623587}} 
+\index{master.py@{master.py}!move\_base@{move\_base}}
+\index{move\_base@{move\_base}!master.py@{master.py}}
+\doxysubsubsection{\texorpdfstring{move\_base()}{move\_base()}}
+{\footnotesize\ttfamily def master.\+move\+\_\+base (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Represent the first motion option. 
+
+In this function is asked coordinates to the user the goal is published in /move\+\_\+base/goal topic and the feedback is displayed to the user. Both at the end and during the motion towards the goal, the user can cancel the current goal and choose another one. \mbox{\Hypertarget{master_8py_a9b433ea76d3b1ce511e1361719d4e55d}\label{master_8py_a9b433ea76d3b1ce511e1361719d4e55d}} 
+\index{master.py@{master.py}!take\_action@{take\_action}}
+\index{take\_action@{take\_action}!master.py@{master.py}}
+\doxysubsubsection{\texorpdfstring{take\_action()}{take\_action()}}
+{\footnotesize\ttfamily def master.\+take\+\_\+action (\begin{DoxyParamCaption}\item[{}]{min\+\_\+fright,  }\item[{}]{min\+\_\+front,  }\item[{}]{min\+\_\+fleft }\end{DoxyParamCaption})}
+
+
+
+Takes into account the closest obstacle distance for moving the robot in the opposite direction the function is used in the assisted motion drive for force the robot to not crash. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em min\+\_\+fright} & float minimum distance in the right direction @parmam min\+\_\+front float minimum distance in the front direction \\
+\hline
+{\em min\+\_\+fright} & float minimum distance in the left direction \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{master_8py_aa69429913e6259aa39d5e66d76e4dd72}\label{master_8py_aa69429913e6259aa39d5e66d76e4dd72}} 
+\index{master.py@{master.py}!todist@{todist}}
+\index{todist@{todist}!master.py@{master.py}}
+\doxysubsubsection{\texorpdfstring{todist()}{todist()}}
+{\footnotesize\ttfamily def master.\+todist (\begin{DoxyParamCaption}\item[{}]{x,  }\item[{}]{y,  }\item[{}]{x\+\_\+pos,  }\item[{}]{y\+\_\+pos }\end{DoxyParamCaption})}
+
+
+
+Use pitagora formula for calculating the distance between the robot and goal position. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & position of the robot \\
+\hline
+{\em y} & position of the robot \\
+\hline
+{\em x\+\_\+goal} & x coordinate of the goal \\
+\hline
+{\em y\+\_\+goal} & y coordinate of the goal \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a float number, the distance 
+\end{DoxyReturn}
