@@ -1,0 +1,105 @@
+\hypertarget{md_final_assignment__r_e_a_d_m_e_autotoc_md0}{}\doxysection{Introduction}\label{md_final_assignment__r_e_a_d_m_e_autotoc_md0}
+I was asked to develop a program in which the user control the robot in a 3D simulation enviroment in three different ways\+: 1) autonomously reach a x,y coordinate inserted by the user 2) drive the robot with the keyboard 3) drive the robot with keyboard but avoiding collisions\hypertarget{md_final_assignment__r_e_a_d_m_e_autotoc_md1}{}\doxysection{How to install}\label{md_final_assignment__r_e_a_d_m_e_autotoc_md1}
+Install in your workspace and build\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ catkin\_make}
+
+\end{DoxyCode}
+\hypertarget{md_final_assignment__r_e_a_d_m_e_autotoc_md2}{}\doxysection{How to run}\label{md_final_assignment__r_e_a_d_m_e_autotoc_md2}
+Open 2 terminals and write in the command lines \+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ roslaunch final\_assignment master.launch}
+\DoxyCodeLine{}
+\DoxyCodeLine{\$ rosrun final\_assignment master.py}
+
+\end{DoxyCode}
+\hypertarget{md_final_assignment__r_e_a_d_m_e_autotoc_md3}{}\doxysection{Pseudocode}\label{md_final_assignment__r_e_a_d_m_e_autotoc_md3}
+1) Autonomous drive
+
+After asking coordinates x,y, they will published to move\+\_\+base/goal
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{}
+\DoxyCodeLine{msg.target\_pose.pose.position.x = x}
+\DoxyCodeLine{msg.goal.target\_pose.pose.position.y = y}
+\DoxyCodeLine{publisher\_movebase.publish(msg) }
+
+\end{DoxyCode}
+ The status is retrived by move\+\_\+base/status and the user can cancel (publishing in move\+\_\+base/cancel) the goal and insert a new one\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{print(\textcolor{stringliteral}{"{}\(\backslash\)nDo you want a new goal?[y] or [n]\(\backslash\)n"{}})}
+\DoxyCodeLine{                     }
+\DoxyCodeLine{button = input()}
+\DoxyCodeLine{ }
+\DoxyCodeLine{ if(button == \textcolor{stringliteral}{'y'}):}
+\DoxyCodeLine{    print(\textcolor{stringliteral}{"{}Okay\(\backslash\)n"{}})}
+\DoxyCodeLine{    \textcolor{keywordflow}{break}}
+\DoxyCodeLine{ if(button == \textcolor{stringliteral}{'n'}):}
+\DoxyCodeLine{    publisher\_cancel = rospy.Publisher(\textcolor{stringliteral}{"{}/move\_base/cancel"{}}, GoalID, queue\_size = 1)}
+\DoxyCodeLine{    cancel = GoalID()}
+\DoxyCodeLine{    publisher\_cancel.publish(cancel)}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} 1}
+
+\end{DoxyCode}
+
+
+2) Manual control
+
+The user digit the comand and the correct velocity is published in cmd/vel 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{if} (arrow == \textcolor{stringliteral}{'w'}):}
+\DoxyCodeLine{    [my\_vel.linear.x, my\_vel.angular.z] =[1 , 0] }
+\DoxyCodeLine{\textcolor{keywordflow}{elif} (arrow == \textcolor{stringliteral}{'a'}):}
+\DoxyCodeLine{    [my\_vel.linear.x, my\_vel.angular.z] =[0 , 2]}
+\DoxyCodeLine{\textcolor{keywordflow}{elif} (arrow == \textcolor{stringliteral}{'d'}):}
+\DoxyCodeLine{    [my\_vel.linear.x, my\_vel.angular.z] =[0, -\/2]}
+\DoxyCodeLine{\textcolor{keywordflow}{elif} (arrow == \textcolor{stringliteral}{'s'}):}
+\DoxyCodeLine{    [my\_vel.linear.x, my\_vel.angular.z] =[-\/1 , 0]}
+\DoxyCodeLine{\textcolor{keywordflow}{elif} (arrow == \textcolor{stringliteral}{'q'}):}
+\DoxyCodeLine{    [my\_vel.linear.x, my\_vel.angular.z] =[0 , 0]}
+\DoxyCodeLine{    vel\_pub.publish(my\_vel)}
+\DoxyCodeLine{    \textcolor{keywordflow}{break}}
+\DoxyCodeLine{\textcolor{keywordflow}{else}:}
+\DoxyCodeLine{    print(\textcolor{stringliteral}{"{}Wrong button"{}})}
+\DoxyCodeLine{    vel\_pub.publish(my\_vel)}
+
+\end{DoxyCode}
+
+
+3) Assisted-\/manual drive
+
+The program compute the minimum distance in several direction
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{min\_fright = min(min(msg.ranges[144:287]), 5)}
+\DoxyCodeLine{min\_front =  min(min(msg.ranges[288:431]), 5)}
+\DoxyCodeLine{min\_fleft =  min(min(msg.ranges[432:575]), 5)}
+
+\end{DoxyCode}
+
+
+and if it is less then a threshold the velocity is published not by the user but by \mbox{\hyperlink{master_8py_a9b433ea76d3b1ce511e1361719d4e55d}{take\+\_\+action()}} trying to avoid obstacles 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{if} min\_front > 1 \textcolor{keywordflow}{and} min\_fleft > 1 \textcolor{keywordflow}{and} min\_fright > 1:}
+\DoxyCodeLine{    state\_description = \textcolor{stringliteral}{'case 1 -\/ nothing'}}
+\DoxyCodeLine{    linear\_x = 0.6}
+\DoxyCodeLine{    angular\_z = 0}
+\DoxyCodeLine{\textcolor{keywordflow}{elif} min\_front < 1 \textcolor{keywordflow}{and} min\_fleft > 1 \textcolor{keywordflow}{and} min\_fright > 1:}
+\DoxyCodeLine{    state\_description = \textcolor{stringliteral}{'case 2 -\/ front'}}
+\DoxyCodeLine{    linear\_x = -\/2}
+\DoxyCodeLine{    angular\_z = 0}
+\DoxyCodeLine{\textcolor{keywordflow}{elif} min\_front > 1 \textcolor{keywordflow}{and} min\_fleft > 1 \textcolor{keywordflow}{and} min\_fright < 1:}
+\DoxyCodeLine{    state\_description = \textcolor{stringliteral}{'case 3 -\/ fright'}}
+\DoxyCodeLine{    linear\_x = 0}
+\DoxyCodeLine{    angular\_z = 1}
+
+\end{DoxyCode}
+ 
