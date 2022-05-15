@@ -11,7 +11,7 @@ University of Genova
 MSC Robotics engineering 
 
 
-#### In this repository all the assignments done during year.
+#### In this branch all the assignments done during the first semester.
 #### In the branch second_semester the other assignments.
 
 
