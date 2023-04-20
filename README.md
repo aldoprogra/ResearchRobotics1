@@ -27,15 +27,10 @@ https://user-images.githubusercontent.com/80604899/233502621-461f8024-4d58-45aa-
 
 Author: Sinatra Gesualdo
 
-Professor: Carmine Tommaso Recchiuto
-
-University of Genova
-
 MSC Robotics engineering 
 
 
-#### In this branch all the assignments done during the first semester.
-#### In the branch second_semester the other assignments.
+#### Look the branch for code and documentation
 
 
 
